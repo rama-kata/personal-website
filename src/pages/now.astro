@@ -2,7 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const doing = [
-  'Working as an AI Associate at Crossbeam in San Francisco, building data pipelines and LLM-augmented extraction systems — with most of my attention on quality, failure analysis, and reconciliation tooling.',
   'Building toward an ML Engineer role through applied systems work: fine-tuning, eval infrastructure, and distributed training.',
   'Competing in the Nemotron-3 Reasoning Challenge — training a 30B reasoning model with LoRA across dual RTX PRO 6000s and a DGX Spark, with programmatic synthetic puzzle generation and an automated eval pipeline.',
 ];
@@ -38,6 +37,7 @@ const notDoing = [
         As of April 2026, these are the priorities getting most of my attention:
       </p>
       <ul class="list-disc space-y-4 pl-6 text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        <li>Working as an AI Associate at <a href="https://www.crossbeam.com/" rel="noopener noreferrer">Crossbeam</a> in San Francisco, building data pipelines and LLM-augmented extraction systems — with most of my attention on quality, failure analysis, and reconciliation tooling.</li>
         {doing.map((item) => <li>{item}</li>)}
         <li>
           Iterating on <a href="https://github.com/rama-kata/ml-eval-harness">ml-eval-harness</a>,
