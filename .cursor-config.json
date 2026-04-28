@@ -1,0 +1,19 @@
+{
+  "keyFiles": [
+    "astro.config.mjs",
+    "src/layouts/BaseLayout.astro",
+    "src/components/Nav.astro",
+    "src/components/ProjectCard.astro",
+    "src/styles/global.css",
+    "src/pages/index.astro",
+    "src/pages/now.astro",
+    "src/pages/projects/index.astro",
+    "src/pages/stack.astro",
+    "src/pages/contact.astro"
+  ],
+  "tasks": {
+    "dev": "npm run dev",
+    "build": "npm run build",
+    "preview": "npm run preview"
+  }
+}

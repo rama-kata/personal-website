@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const doing = [
+  'Working as an AI Associate at Crossbeam in San Francisco, building data pipelines and LLM-augmented extraction systems — with most of my attention on quality, failure analysis, and reconciliation tooling.',
+  'Building toward an ML Engineer role through applied systems work: fine-tuning, eval infrastructure, and distributed training.',
+  'Competing in the Nemotron-3 Reasoning Challenge — training a 30B reasoning model with LoRA across dual RTX PRO 6000s and a DGX Spark, with programmatic synthetic puzzle generation and an automated eval pipeline.',
+];
+
+const notDoing = [
+  'Chasing new project ideas before the Nemotron work has measurable results.',
+  'Spreading attention across too many unrelated side projects.',
+];
+---
+
+<BaseLayout title="Now" description="What Riiny Giir is focused on right now.">
+  <section class="mx-auto max-w-3xl py-24 text-center sm:py-32" aria-labelledby="now-title">
+    <img
+      src="/profile.jpg"
+      alt="Riiny Giir"
+      class="mx-auto mb-10 h-20 w-20 rounded-2xl border border-[var(--color-border)] object-cover shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:border-[var(--color-border-on-dark)]"
+    />
+    <h1 id="now-title" class="text-5xl font-semibold leading-[0.98] tracking-tight sm:text-7xl">
+      My now page
+      <span class="font-display italic text-[0.9em] text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        get to know me
+      </span>
+    </h1>
+    <p class="mx-auto mt-6 max-w-xl text-base leading-relaxed text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+      A quick snapshot of what I am focused on right now.
+    </p>
+  </section>
+
+  <article class="mx-auto max-w-3xl pb-24 text-base leading-relaxed">
+    <section class="mb-12">
+      <h2 class="mb-5 text-lg font-semibold">What I'm doing now</h2>
+      <p class="mb-5 text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        As of April 2026, these are the priorities getting most of my attention:
+      </p>
+      <ul class="list-disc space-y-4 pl-6 text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        {doing.map((item) => <li>{item}</li>)}
+        <li>
+          Iterating on <a href="https://github.com/rama-kata/ml-eval-harness">ml-eval-harness</a>,
+          a small framework for comparing local LLMs across exact-match, token-F1,
+          and LLM-as-judge metrics.
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="mb-5 text-lg font-semibold">What I'm not doing</h2>
+      <p class="mb-5 text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        To make room for the work that matters most, I am intentionally avoiding:
+      </p>
+      <ul class="list-disc space-y-4 pl-6 text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        {notDoing.map((item) => <li>{item}</li>)}
+      </ul>
+    </section>
+
+    <p class="text-sm text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+      Published: 2026.04.28 · Last updated: 2026.04.28
+    </p>
+  </article>
+</BaseLayout>

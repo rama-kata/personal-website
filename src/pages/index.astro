@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <section class="mx-auto max-w-4xl py-24 text-center sm:py-32" aria-labelledby="home-title">
+    <img
+      src="/profile.jpg"
+      alt="Riiny Giir"
+      class="mx-auto mb-8 h-24 w-24 rounded-full border border-[var(--color-border)] object-cover shadow-[0_8px_24px_rgba(0,0,0,0.08)] dark:border-[var(--color-border-on-dark)]"
+    />
+    <a class="inline-flex items-center gap-3 text-sm font-medium text-[var(--color-foreground)] hover:text-[var(--color-accent)] dark:text-[var(--color-background)]" href="/contact">
+      Based in San Francisco
+      <span aria-hidden="true">›</span>
+    </a>
+    <h1 id="home-title" class="mt-12 text-6xl font-semibold leading-[0.95] tracking-tight sm:text-7xl md:text-8xl">
+      Hi, I'm Riiny,
+      <span class="font-display block italic text-[0.9em] text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        AI Associate.
+      </span>
+    </h1>
+    <p class="mx-auto mt-8 max-w-2xl text-xl leading-relaxed text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+      I am an AI Associate at Crossbeam, based in San Francisco, working toward
+      an ML Engineer role. My focus is applied ML: fine-tuning, eval
+      infrastructure, distributed training, and the systems work that makes
+      model iteration legible under real constraints.
+    </p>
+    <div class="mt-12 flex flex-wrap items-center justify-center gap-x-12 gap-y-5 text-lg font-semibold text-[var(--color-foreground)]/70 dark:text-[var(--color-background)]/70">
+      <span>LoRA</span>
+      <span>PyTorch</span>
+      <span>vLLM</span>
+      <span>CUDA</span>
+    </div>
+  </section>
+
+  <div class="mx-auto grid max-w-4xl gap-6 pb-24 sm:grid-cols-2">
+    <section class="rounded-3xl border border-[var(--color-border)] bg-[var(--color-muted-surface)] p-8 shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:border-[var(--color-border-on-dark)] dark:bg-[color-mix(in_srgb,var(--color-foreground)_88%,white_12%)]" aria-labelledby="current-focus">
+      <h2 id="current-focus" class="font-display text-3xl italic">Current Focus</h2>
+      <p class="mt-8 text-base leading-relaxed text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        I am building toward the Nemotron-3 Reasoning Challenge with a distributed
+        GPU setup spanning workstation 6000s and DGX Spark, targeting the June
+        2026 deadline.
+      </p>
+    </section>
+
+    <section class="rounded-3xl border border-[var(--color-border)] bg-[var(--color-muted-surface)] p-8 shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:border-[var(--color-border-on-dark)] dark:bg-[color-mix(in_srgb,var(--color-foreground)_88%,white_12%)]" aria-labelledby="background">
+      <h2 id="background" class="font-display text-3xl italic">Background</h2>
+      <p class="mt-8 text-base leading-relaxed text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        My career arc has moved from product-facing AI work into deeper model
+        and infrastructure questions, combining partnership product work with
+        large-model reasoning experiments.
+      </p>
+    </section>
+  </div>
+</BaseLayout>

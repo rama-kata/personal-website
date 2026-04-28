@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Instrument Serif", serif;
+
+  --color-background: oklch(100% 0 0);
+  --color-foreground: oklch(20.9% 0.006 271.116);
+  --color-muted-surface: oklch(98.2% 0 0);
+  --color-muted-foreground: oklch(47% 0.003 345.31);
+  --color-border: oklch(92.8% 0 0);
+  --color-accent: oklch(65.9% 0.23 35.2);
+  --color-accent-dark: oklch(60.2% 0.203 32.1);
+
+  --color-foreground-on-dark: oklch(100% 0 0);
+  --color-muted-foreground-on-dark: oklch(75.1% 0 0);
+  --color-border-on-dark: oklch(40.5% 0 0);
+}
+
+@layer base {
+  html { font-family: var(--font-sans); }
+  body { background: var(--color-background); color: var(--color-foreground); }
+  html.dark body { background: var(--color-foreground); color: var(--color-background); }
+  .font-display { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.02em; }
+  a { color: var(--color-accent); text-decoration: none; }
+  a:hover { color: var(--color-accent-dark); text-decoration: underline; text-underline-offset: 0.18em; }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    min-width: 320px;
+    text-rendering: optimizeLegibility;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  button {
+    font: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+}

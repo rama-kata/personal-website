@@ -1,0 +1,110 @@
+---
+import Nav from '../components/Nav.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Riiny Giir',
+  description = 'Riiny Giir is an AI Associate at Crossbeam in San Francisco, working toward ML Engineer.',
+} = Astro.props;
+const pageTitle = title === 'Riiny Giir' ? title : `${title} | Riiny Giir`;
+const lastUpdated = new Date().toLocaleDateString('en', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="author" content="Riiny Giir" />
+    <meta name="keywords" content="ML Engineer, Applied ML, LoRA fine-tuning, distributed training, PyTorch, vLLM, CUDA, LLM eval, reasoning models, AI infrastructure, San Francisco" />
+    <meta name="profile:skills" content="LoRA, PEFT, QLoRA, PyTorch DDP, NCCL, vLLM, HuggingFace Transformers, CUDA, Mamba, MoE, Python, TypeScript" />
+    <meta name="profile:seeking" content="ML Engineer, Applied ML Engineer, Research Engineer, AI Infrastructure Engineer" />
+    <meta name="profile:status" content="Open to opportunities — actively seeking ML Engineer roles" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="profile" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <script type="application/ld+json" is:inline>{JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Riiny Giir",
+      "url": "https://www.linkedin.com/in/riiny-giir-a1b29b213/",
+      "jobTitle": "AI Associate",
+      "description": "Applied ML engineer and AI builder based in San Francisco. Specializes in LLM fine-tuning, distributed training, and eval infrastructure. Actively seeking ML Engineer roles.",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Crossbeam"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "San Francisco",
+        "addressRegion": "CA",
+        "addressCountry": "US"
+      },
+      "sameAs": [
+        "https://github.com/rama-kata",
+        "https://www.linkedin.com/in/riiny-giir-a1b29b213/"
+      ],
+      "knowsAbout": [
+        "LoRA fine-tuning",
+        "PEFT",
+        "QLoRA",
+        "PyTorch",
+        "Distributed training",
+        "NCCL",
+        "PyTorch DDP",
+        "vLLM",
+        "HuggingFace Transformers",
+        "CUDA",
+        "Mamba",
+        "Mixture-of-Experts",
+        "LLM evaluation",
+        "Reasoning models",
+        "ML infrastructure",
+        "Python",
+        "TypeScript"
+      ],
+      "seeks": {
+        "@type": "JobPosting",
+        "title": "ML Engineer / Applied ML Engineer / Research Engineer",
+        "description": "Riiny is actively seeking ML Engineer, Applied ML Engineer, Research Engineer, and AI Infrastructure roles. He brings rare hands-on experience training 30B-parameter reasoning models end-to-end across distributed GPU hardware, building production eval infrastructure, and applying ML in a real product context."
+      }
+    })}</script>
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) document.documentElement.classList.add('dark');
+    </script>
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <Nav />
+    <div class="mx-auto max-w-5xl px-6">
+      <main class="min-h-[70vh]">
+        <slot />
+      </main>
+      <footer class="mx-auto max-w-2xl border-t border-[var(--color-border)] py-8 text-center text-sm text-[var(--color-muted-foreground)] dark:border-[var(--color-border-on-dark)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        <p>&copy; {new Date().getFullYear()} Riiny Giir. Last updated {lastUpdated}.</p>
+      </footer>
+    </div>
+  </body>
+</html>

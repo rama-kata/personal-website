@@ -1,0 +1,38 @@
+---
+import ProjectCard from '../../components/ProjectCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const projects = [
+  {
+    title: 'Nemotron-3 Reasoning Challenge',
+    description:
+      'LoRA fine-tuning harness for a 30B reasoning model with distributed training across dual RTX PRO 6000s + DGX Spark, programmatic synthetic puzzle generation, and an automated eval pipeline. Kaggle competition, $25K+ prize pool.',
+    year: '2026, ongoing',
+  },
+  // TODO: Add 1-2 more projects with title, one-line description, year, and optional link.
+];
+---
+
+<BaseLayout title="Projects" description="Projects by Riiny Giir.">
+  <section class="mx-auto max-w-4xl py-24 text-center sm:py-32" aria-labelledby="projects-title">
+    <h1 id="projects-title" class="text-6xl font-semibold leading-[0.95] tracking-tight sm:text-7xl">
+      I like to build
+      <span class="font-display block italic text-[0.92em] text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        reasoning systems from scratch
+      </span>
+    </h1>
+    <p class="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+      Applied ML, distributed training, and product systems work.
+    </p>
+  </section>
+
+  <section class="pb-24" aria-labelledby="project-list-title">
+    <div class="mb-8 flex items-center justify-between">
+      <h2 id="project-list-title" class="font-display text-3xl italic">Projects</h2>
+      <a class="text-sm text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]" href="/contact">Get in touch</a>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {projects.map((project) => <ProjectCard {...project} />)}
+    </div>
+  </section>
+</BaseLayout>

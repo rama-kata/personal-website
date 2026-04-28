@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const groups = [
+  {
+    label: 'Development',
+    links: [
+      { label: 'GitHub', href: 'https://github.com/rama-kata', text: '@rama-kata', icon: 'GH' },
+    ],
+  },
+  {
+    label: 'Social Media',
+    links: [
+      { label: 'LinkedIn', href: 'https://www.linkedin.com/in/riiny-giir-a1b29b213/', text: 'in/riiny-giir-a1b29b213', icon: 'IN' },
+    ],
+  },
+  {
+    label: 'Other',
+    links: [
+      { label: 'Email', href: 'mailto:{{EMAIL}}', text: '{{EMAIL}}', icon: '@' },
+    ],
+  },
+];
+---
+
+<BaseLayout title="Contact" description="Contact links for Riiny Giir.">
+  <section class="mx-auto max-w-4xl py-24 text-center sm:py-32" aria-labelledby="contact-title">
+    <h1 id="contact-title" class="text-6xl font-semibold leading-[0.95] tracking-tight sm:text-7xl">
+      Let's build
+      <span class="font-display block italic text-[0.92em] text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        something useful
+      </span>
+    </h1>
+    <p class="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+      The best places to find me or reach out.
+    </p>
+  </section>
+
+  <section class="mx-auto max-w-3xl space-y-12 pb-24" aria-label="Contact methods">
+    {
+      groups.map((group) => (
+        <div>
+          <h2 class="mb-5 font-display text-3xl italic">{group.label}</h2>
+          <div class="space-y-3">
+            {group.links.map((link) => (
+              <a
+                class="flex items-center gap-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-muted-surface)] p-5 text-[var(--color-foreground)] shadow-[0_8px_24px_rgba(0,0,0,0.05)] hover:text-[var(--color-accent)] hover:no-underline dark:border-[var(--color-border-on-dark)] dark:bg-[color-mix(in_srgb,var(--color-foreground)_88%,white_12%)] dark:text-[var(--color-background)]"
+                href={link.href}
+              >
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-foreground)] text-xs font-semibold text-[var(--color-background)] dark:bg-[var(--color-background)] dark:text-[var(--color-foreground)]">
+                  {link.icon}
+                </span>
+                <span>
+                  <span class="block text-xs font-semibold uppercase tracking-wider">{link.label}</span>
+                  <span class="mt-1 block text-sm text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">{link.text}</span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </section>
+</BaseLayout>

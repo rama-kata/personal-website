@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const groups = [
+  { label: 'Languages', items: ['Python', 'TypeScript', 'Bash'] },
+  { label: 'ML', items: ['PyTorch', 'PEFT/LoRA', 'vLLM', 'HuggingFace Transformers', 'Mamba', 'MoE'] },
+  { label: 'Infrastructure', items: ['NCCL/DDP', 'CUDA', 'Linux', 'tmux', 'SSH/Tailscale mesh'] },
+  { label: 'Tools', items: ['Claude Code', 'Cursor', 'git', 'neovim'] },
+];
+---
+
+<BaseLayout title="Stack" description="Tools and technologies used by Riiny Giir.">
+  <section class="mx-auto max-w-4xl py-24 text-center sm:py-32" aria-labelledby="stack-title">
+    <h1 id="stack-title" class="text-6xl font-semibold leading-[0.95] tracking-tight sm:text-7xl">
+      Software I use daily
+      <span class="font-display block italic text-[0.92em] text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        and recommend
+      </span>
+    </h1>
+    <p class="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+      A compact view of the tools I use for model work, infrastructure, and
+      product engineering.
+    </p>
+  </section>
+
+  <section class="space-y-12 pb-24" aria-label="Technology groups">
+    {
+      groups.map((group) => (
+        <div>
+          <h2 class="mb-5 font-display text-3xl italic">
+            {group.label}
+          </h2>
+          <ul class="grid gap-4 sm:grid-cols-2">
+            {group.items.map((item) => (
+              <li class="rounded-3xl border border-[var(--color-border)] bg-[var(--color-muted-surface)] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.05)] dark:border-[var(--color-border-on-dark)] dark:bg-[color-mix(in_srgb,var(--color-foreground)_88%,white_12%)]">
+                <p class="font-medium">{item}</p>
+                <p class="mt-2 text-sm text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">{group.label}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </section>
+</BaseLayout>

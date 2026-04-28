@@ -1,0 +1,29 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  year: string;
+  href?: string;
+}
+
+const { title, description, year, href } = Astro.props;
+---
+
+<article class="group flex min-h-64 flex-col justify-between rounded-3xl border border-[var(--color-border)] bg-[var(--color-muted-surface)] p-8 shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:border-[var(--color-border-on-dark)] dark:bg-[color-mix(in_srgb,var(--color-foreground)_88%,white_12%)]">
+  <div class="flex items-start justify-between gap-6">
+    <div>
+      <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        {year}
+      </p>
+      <h2 class="text-base font-semibold uppercase tracking-wide text-[var(--color-foreground)] dark:text-[var(--color-background)]">
+        {href ? <a class="text-inherit hover:text-[var(--color-accent)]" href={href}>{title}</a> : title}
+      </h2>
+    </div>
+    <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-foreground)] text-lg leading-none text-[var(--color-background)] dark:bg-[var(--color-background)] dark:text-[var(--color-foreground)]">
+      +
+    </span>
+  </div>
+  <p class="mt-16 text-base leading-relaxed text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+    {description}
+  </p>
+</article>
