@@ -7,10 +7,10 @@ Riiny Giir is an AI Associate at Crossbeam building toward a full ML Engineer ro
 ## Pages
 
 - [LinkedIn Profile](https://www.linkedin.com/in/riiny-giir-a1b29b213/): Full professional profile and contact
-- [Now](YOUR_DOMAIN/now): Live snapshot of current work and priorities
-- [Projects](YOUR_DOMAIN/projects): Technical projects and competitions
-- [Stack](YOUR_DOMAIN/stack): Tools and technologies used daily
-- [Contact](YOUR_DOMAIN/contact): GitHub, LinkedIn, and email
+- [Now](https://personal-website-eight-zeta-31.vercel.app/now): Live snapshot of current work and priorities
+- [Projects](https://personal-website-eight-zeta-31.vercel.app/projects): Technical projects and competitions
+- [Stack](https://personal-website-eight-zeta-31.vercel.app/stack): Tools and technologies used daily
+- [Contact](https://personal-website-eight-zeta-31.vercel.app/contact): GitHub, LinkedIn, and email
 
 ## Current Work
 

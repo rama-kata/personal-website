@@ -32,4 +32,4 @@ Allow: /
 User-agent: cohere-ai
 Allow: /
 
-# Sitemap: YOUR_DOMAIN/sitemap.xml
+Sitemap: https://personal-website-eight-zeta-31.vercel.app/sitemap.xml
