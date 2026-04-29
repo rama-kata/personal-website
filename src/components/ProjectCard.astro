@@ -4,9 +4,10 @@ interface Props {
   description: string;
   year: string;
   href?: string;
+  team?: string[];
 }
 
-const { title, description, year, href } = Astro.props;
+const { title, description, year, href, team } = Astro.props;
 ---
 
 <article class="group flex min-h-64 flex-col justify-between rounded-3xl border border-[var(--color-border)] bg-[var(--color-muted-surface)] p-8 shadow-[0_8px_24px_rgba(0,0,0,0.06)] dark:border-[var(--color-border-on-dark)] dark:bg-[color-mix(in_srgb,var(--color-foreground)_88%,white_12%)]">
@@ -26,4 +27,11 @@ const { title, description, year, href } = Astro.props;
   <p class="mt-16 text-base leading-relaxed text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
     {description}
   </p>
+  {team && (
+    <p class="mt-4 text-sm text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+      Team: {team.map((name, i) => (
+        <><strong class="text-[var(--color-foreground)] dark:text-[var(--color-background)]">{name}</strong>{i < team.length - 1 ? ', ' : ''}</>
+      ))}
+    </p>
+  )}
 </article>
