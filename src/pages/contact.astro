@@ -1,7 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const groups = [
+// The address is stored reversed and only assembled in the browser after a click, so it
+// never appears readable in the HTML that scrapers harvest.
+const EMAIL_USER_REVERSED = '742yniir.yniir';
+const EMAIL_DOMAIN_REVERSED = 'moc.liamg';
+const cardClass =
+  'flex items-center gap-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-muted-surface)] p-5 text-[var(--color-foreground)] shadow-[0_8px_24px_rgba(0,0,0,0.05)] dark:border-[var(--color-border-on-dark)] dark:bg-[color-mix(in_srgb,var(--color-foreground)_88%,white_12%)] dark:text-[var(--color-background)]';
+const iconClass =
+  'flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-foreground)] text-xs font-semibold text-[var(--color-background)] dark:bg-[var(--color-background)] dark:text-[var(--color-foreground)]';
+const buttonClass =
+  'rounded-full border border-[var(--color-border)] px-4 py-2 text-sm font-medium text-[var(--color-foreground)] hover:border-[var(--color-foreground)] dark:border-[var(--color-border-on-dark)] dark:text-[var(--color-background)] dark:hover:border-[var(--color-background)]';
+
+type ContactLink = { label: string; icon: string; href?: string; text?: string; email?: boolean };
+
+const groups: { label: string; links: ContactLink[] }[] = [
   {
     label: 'Development',
     links: [
@@ -17,7 +30,7 @@ const groups = [
   {
     label: 'Other',
     links: [
-      { label: 'Email', href: 'mailto:{{EMAIL}}', text: '{{EMAIL}}', icon: '@' },
+      { label: 'Email', email: true, icon: '@' },
     ],
   },
 ];
@@ -42,7 +55,21 @@ const groups = [
         <div>
           <h2 class="mb-5 font-display text-3xl italic">{group.label}</h2>
           <div class="space-y-3">
-            {group.links.map((link) => (
+            {group.links.map((link) => link.email ? (
+              <div class={cardClass} id="email-card" data-u={EMAIL_USER_REVERSED} data-d={EMAIL_DOMAIN_REVERSED}>
+                <span class={iconClass}>{link.icon}</span>
+                <span class="min-w-0 flex-1">
+                  <span class="block text-xs font-semibold uppercase tracking-wider">{link.label}</span>
+                  <span class="mt-1 block break-all text-sm text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]" id="email-text">
+                    r•••••••••••••@gmail.com
+                  </span>
+                </span>
+                <span class="flex shrink-0 flex-wrap justify-end gap-2">
+                  <button type="button" id="email-show" class={buttonClass}>Show email</button>
+                  <button type="button" id="email-copy" class={buttonClass} hidden>Copy</button>
+                </span>
+              </div>
+            ) : (
               <a
                 class="flex items-center gap-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-muted-surface)] p-5 text-[var(--color-foreground)] shadow-[0_8px_24px_rgba(0,0,0,0.05)] hover:text-[var(--color-accent)] hover:no-underline dark:border-[var(--color-border-on-dark)] dark:bg-[color-mix(in_srgb,var(--color-foreground)_88%,white_12%)] dark:text-[var(--color-background)]"
                 href={link.href}
@@ -62,3 +89,34 @@ const groups = [
     }
   </section>
 </BaseLayout>
+
+<script>
+  const card = document.getElementById('email-card');
+  const text = document.getElementById('email-text');
+  const show = document.getElementById('email-show');
+  const copy = document.getElementById('email-copy');
+  const reverse = (v: string) => v.split('').reverse().join('');
+  const address = () => `${reverse(card?.dataset.u ?? '')}@${reverse(card?.dataset.d ?? '')}`;
+
+  show?.addEventListener('click', () => {
+    if (!text || !show || !copy) return;
+    const email = address();
+    const link = document.createElement('a');
+    link.href = `mailto:${email}`;
+    link.textContent = email;
+    text.replaceChildren(link);
+    show.hidden = true;
+    copy.hidden = false;
+  });
+
+  copy?.addEventListener('click', async () => {
+    if (!copy) return;
+    try {
+      await navigator.clipboard.writeText(address());
+      copy.textContent = 'Copied';
+    } catch {
+      copy.textContent = 'Select the address to copy';
+    }
+    setTimeout(() => (copy.textContent = 'Copy'), 2000);
+  });
+</script>
