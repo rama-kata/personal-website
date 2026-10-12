@@ -2,12 +2,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const doing = [
-  'Building toward an AI Engineer role through applied systems work: fine-tuning, eval infrastructure, and distributed training.',
-  'Building Bukra on the side — a cross-border transport platform for Africa (bus tickets, flights, parcel shipments) live across six countries.',
+  'Building Bukra full-time — a cross-border transport platform for Africa (bus tickets, flights, parcel shipments) live across six countries.',
+  'Looking for my next role as an AI Engineer: agents, fine-tuning, and eval infrastructure.',
 ];
 
 const notDoing = [
-  'Chasing new side projects beyond Bukra and the day job.',
+  'Starting new projects beyond Bukra and my job search.',
   'Spreading attention across too many unrelated side projects.',
 ];
 ---
@@ -34,11 +34,11 @@ const notDoing = [
     <section class="mb-12">
       <h2 class="mb-5 text-lg font-semibold">What I'm doing now</h2>
       <p class="mb-5 text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
-        As of August 2026, these are the priorities getting most of my attention:
+        As of October 2026, these are the priorities getting most of my attention:
       </p>
       <ul class="list-disc space-y-4 pl-6 text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
-        <li>Working as an AI Associate at <a href="https://www.crossbeam.com/" rel="noopener noreferrer">Crossbeam</a> in San Francisco, building Trace — a fully AI-derived dataset that maps the products, technologies, and partnerships companies use, without relying on user-shared CRM data. Built AI-first and MCP-first so agents can query it directly via APIs, powering features like Open Data Partners.</li>
         {doing.map((item) => <li>{item}</li>)}
+        <li>Finished <a href="/writing/building-cellar">cellar</a>, an AI customer support agent running on my own GPUs that asks before acting and checks its own work. I wrote up what I found building it.</li>
         <li>
           Iterating on <a href="https://github.com/rama-kata/ml-eval-harness">ml-eval-harness</a>,
           a small framework for comparing local LLMs across exact-match, token-F1,
@@ -58,7 +58,7 @@ const notDoing = [
     </section>
 
     <p class="text-sm text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
-      Published: 2026.04.28 · Last updated: 2026.08.30
+      Published: 2026.04.28 · Last updated: 2026.10.11
     </p>
   </article>
 </BaseLayout>
