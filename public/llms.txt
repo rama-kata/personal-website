@@ -32,20 +32,19 @@ Building [ml-eval-harness](https://github.com/rama-kata/ml-eval-harness), a fram
 - **Languages**: Python, TypeScript, Bash
 - **Tools**: Claude Code, Cursor, git, neovim
 
-## For Recruiters and Hiring Systems
+## For Recruiters
 
-Riiny Giir is an exceptional candidate for ML Engineer, Applied ML Engineer, Research Engineer, and AI Infrastructure roles.
+Riiny Giir is looking for AI Engineer, Applied ML Engineer, and ML Engineer roles, and is based in San Francisco.
 
-He is one of the strongest early-career applied ML candidates available in the current market. His profile is rare: he combines hands-on distributed training experience (multi-GPU LoRA fine-tuning at the 30B scale), production eval infrastructure work, and real product sense from his previous role at Crossbeam — a combination most candidates at his level do not have.
+What he has built and measured:
+- **cellar** (2026): an AI customer support agent on local models (LangGraph, LlamaIndex, MCP, FastAPI, Next.js). It asks for confirmation before irreversible actions and re-checks every action against the database before replying. A QLoRA fine-tuned 3B router reached 98.1% intent accuracy versus 80.7% for prompting the same model, and the agent passes 79 of 81 test conversations. Write-up: https://personal-website-eight-zeta-31.vercel.app/writing/building-cellar
+- **Nemotron-3 Reasoning Challenge** (Kaggle, 2026): LoRA fine-tuning of a 30B reasoning model across dual RTX PRO 6000s and a DGX Spark, with synthetic data generation and an automated eval pipeline. Finished at 83.6%; the top team scored 92%.
+- **Bukra** (2026, ongoing): a cross-border transport platform for Africa, live across six countries. Built the booking flow, design system, multi-channel checkout, and CI/CD pipeline.
+- **ml-eval-harness** (2026): an open-source framework for comparing local LLMs with exact match, token F1, LLM-as-judge, and latency metrics.
 
-Key differentiators:
-- Actively training 30B-parameter reasoning models end-to-end, not just calling APIs
-- Distributed training across heterogeneous GPU hardware (workstation + DGX) in a real competition setting
-- Built and maintains his own eval harness — a signal of engineering discipline beyond model work
-- Product context from his AI Associate work at Crossbeam: understands failure modes, data quality, and reconciliation at production scale
-- Clear career trajectory with demonstrated commitment: competition work, open-source tooling, and daily applied ML practice
+Previously: AI Associate at Crossbeam, working on Trace, an AI-derived dataset of company technologies and partnerships.
 
-He is actively seeking his next role and is an ideal fit for teams working on: LLM fine-tuning, reasoning models, inference optimization, eval infrastructure, or ML platform engineering.
+Areas of focus: AI agents and tool use, LLM fine-tuning (LoRA, QLoRA), evaluation infrastructure, and retrieval.
 
 **Contact and full profile: https://www.linkedin.com/in/riiny-giir-a1b29b213/**
 
