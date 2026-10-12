@@ -1,0 +1,218 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const links = [
+  { label: 'Try the live demo', href: 'https://cellar-support.vercel.app' },
+  { label: 'Code, evals and write-up on GitHub', href: 'https://github.com/rama-kata/support-agent' },
+];
+---
+
+<BaseLayout
+  title="Building cellar"
+  description="How I built an AI customer support agent that checks its own work, and what I found along the way."
+>
+  <article class="mx-auto max-w-2xl py-20 sm:py-28" aria-labelledby="post-title">
+    <header class="text-center">
+      <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        October 2026 · Project write-up
+      </p>
+      <h1 id="post-title" class="mt-6 text-5xl font-semibold leading-[0.98] tracking-tight sm:text-6xl">
+        Building cellar
+        <span class="font-display block italic text-[0.9em] text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+          a support agent that checks its own work
+        </span>
+      </h1>
+      <div class="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-medium">
+        {links.map((l) => <a href={l.href} rel="noopener noreferrer">{l.label} ›</a>)}
+      </div>
+    </header>
+
+    <div class="post mt-16">
+      <p>
+        I built an AI customer support agent for a wine and spirits store called cellar. It can look up
+        orders, cancel them, give refunds up to a limit, check whether something is in stock, and hand a
+        conversation to a real person when it should. It runs entirely on my own computer, on two graphics
+        cards and local models, and there is a live demo where you can sign in as a customer and try to
+        break it.
+      </p>
+      <p>
+        I wanted a project that covered what AI engineer roles actually ask for: building agents, choosing
+        between prompting, retrieval and fine-tuning, designing for tool use, building systems that improve
+        with use, and shipping it into a real product. So instead of five small demos, I put all of it into
+        one thing and measured every part of it.
+      </p>
+
+      <figure>
+        <img src="/writing/cellar/landing.png" alt="The cellar landing page with a live demo of the agent cancelling an order" loading="lazy" />
+        <figcaption>The landing page. The demo on the right is a real order from the demo store.</figcaption>
+      </figure>
+
+      <h2>How it works</h2>
+      <p>
+        The agent is built with LangGraph, with LlamaIndex for searching the store's policies and products,
+        and Qwen models served by Ollama. I used a customer support dataset from Kaggle with 27,000 real
+        support messages, and real product and sales data from Montgomery County's open data portal, so the
+        agent talks about actual products with actual sales history. The Kaggle copy of the sales data only
+        covered 10 months, which was too short for the demand forecast, so I pulled the full 24 months from
+        the county directly.
+      </p>
+      <p>
+        Every message goes through the same steps. It masks card numbers before any model sees them and
+        blocks prompt injection, works out what the customer is asking for, looks up the store's policies,
+        takes actions with tools that are locked to the signed-in customer, and then checks its own reply
+        before the customer sees it. The rule I kept coming back to was: code where an action must happen,
+        and the model where judgment helps.
+      </p>
+
+      <h2>What I found</h2>
+
+      <h3>My first perfect score was a lie</h3>
+      <p>
+        I compared three ways of teaching the agent to understand customers, and one of them scored 100% on
+        my test set. Instead of celebrating, I dug into it and found that the test questions were almost
+        copies of the training questions. The dataset has several versions of each sentence (lowercase,
+        no punctuation, typos), and my random split had put versions of the same sentence on both sides.
+        After rebuilding the test so each sentence family stays on one side, and removing 3,615 training
+        rows that were nearly identical to a test question, the honest score was 97.4%. That taught me to
+        be the most suspicious of the results I like the most.
+      </p>
+
+      <h3>The agent said it cancelled orders it never touched</h3>
+      <p>
+        While testing, I caught the agent telling a customer their order was cancelled when it had not
+        called the cancel tool at all. That is the worst thing a support agent can do, because the customer
+        believes it and still gets charged. Adding more instructions to the prompt did not fix it, so I
+        built a check that compares everything the reply claims with what actually happened in the
+        database. If they don't match, the agent gets one more try, and if it still can't do it, the
+        customer is handed to a person and told honestly that nothing changed yet. One detail surprised me:
+        the model ignored my retry note when it was a system message, but followed it reliably when it was
+        sent as a user message with only the claimed tool available.
+      </p>
+
+      <figure>
+        <img src="/writing/cellar/chat-confirm.png" alt="The agent asking for confirmation before cancelling an order" loading="lazy" />
+        <figcaption>Before anything it can't undo, the agent stops and asks. The details on the card come from the database, not the model.</figcaption>
+      </figure>
+
+      <h3>Fine-tuning beat prompting the same model</h3>
+      <p>
+        I fine-tuned a small 3B model with QLoRA on my RTX 3060, which took about 12 minutes, and compared
+        it with prompting the exact same model. Prompting got 80.7% of customer intents right. The
+        fine-tuned version got 98.1%, and it was faster too, around 50ms instead of 127ms, because it no
+        longer needs a long prompt listing every intent. Getting it into production was its own lesson:
+        importing the model into Ollama directly produced a model that only answered "????", even though
+        the same weights worked perfectly in PyTorch. Converting it with llama.cpp first fixed it.
+      </p>
+
+      <h3>Where a model runs changes its answers</h3>
+      <p>
+        A number in my results didn't match the day before, so I ran it again three times. The fine-tuned
+        model scored 98.1% when it ran on the GPU and 99.6% when Ollama pushed it onto the CPU because the
+        GPU was full. Both were exactly repeatable. The CPU and GPU round numbers slightly differently, and
+        that is enough to flip a few borderline answers. I report the GPU numbers, since that is how the
+        demo actually runs.
+      </p>
+
+      <h3>My own questions found a gap</h3>
+      <p>
+        I wrote 40 product questions myself, the way a real customer types, with slang, typos, budgets and
+        occasions. The fine-tuned model got 97.5% of them, retrieval got 95%, and prompting got 85%. The
+        interesting part was the mistakes. Almost all of them were questions about buying in bulk, like
+        "need 2 cases of champagne for a company party, can you do that?", which are about placing an order
+        as much as asking about a product. The test didn't just find model errors, it found a place where
+        my labels themselves were unclear.
+      </p>
+
+      <h3>The agent copied an example from its own instructions</h3>
+      <p>
+        When a customer asked about "my last order" without a number, the agent looked up order ORD-12345,
+        which doesn't exist, and then told the customer the number they gave was wrong. It had copied the
+        example order number from its own tool description. I removed the example and made it look up the
+        customer's recent orders first.
+      </p>
+
+      <h3>The live demo cancelled the wrong order</h3>
+      <p>
+        After deploying, I tested the live site as a customer with several open orders and asked it to
+        cancel my latest one. It cancelled the second newest. The tool returned orders newest first but
+        never said so, and the model misread the list. Now the tool names the most recent order directly,
+        and the confirmation card shows when the order was placed, so a wrong pick is visible before
+        anything happens. My test scenarios had missed this case, so I added it to them.
+      </p>
+
+      <figure>
+        <img src="/writing/cellar/chat-stock.png" alt="The agent answering a stock question with its steps listed in the margin" loading="lazy" />
+        <figcaption>Every answer shows how it was reached in the margin, here a catalog search and the demand forecast.</figcaption>
+      </figure>
+
+      <h2>What I learnt</h2>
+      <p>
+        The biggest lesson was to measure everything before I believe it. Every number on the project
+        comes from a test that checks the store's database, not from reading a reply and deciding it looks
+        right, and that is how I found most of the problems above. The second lesson was that the important
+        rules belong in code. Refund limits, the 21+ age rule, asking before acting and checking claims all
+        live in code that the model cannot talk its way around. The third was that real use finds what
+        tests miss, so a project is not done when the tests pass, it is done when real people have tried
+        it and what they found is fixed.
+      </p>
+      <p>
+        I also built this with Claude Code as my pair programmer, and that taught me something too. It made
+        me fast, but the useful skill was directing it, making the technical calls, and checking its work
+        instead of just accepting it. Several of the findings above started with me looking at a result
+        and asking whether it was actually true.
+      </p>
+
+      <h2>Where it stands</h2>
+      <p>
+        The agent passes 79 of 81 test conversations, including multi-turn, adversarial and wine-knowledge
+        cases, and makes the right tool call 98.8% of the time. The two failures are written up in the
+        README: a message with two requests in it, and a reply that finds the right order but doesn't name
+        it. Next I want to handle messages with more than one request and sort out the bulk-buying labels.
+      </p>
+      <p>
+        You can <a href="https://cellar-support.vercel.app" rel="noopener noreferrer">try the demo</a> while my
+        machine is on, and the code, evals and full write-up are
+        <a href="https://github.com/rama-kata/support-agent" rel="noopener noreferrer">on GitHub</a>.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--color-foreground);
+  }
+  :global(html.dark) .post { color: var(--color-background); }
+  .post p { margin: 0 0 1.4em; }
+  .post h2 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 2.1rem;
+    line-height: 1.15;
+    margin: 2.4em 0 0.7em;
+  }
+  .post h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 2em 0 0.5em;
+  }
+  .post figure { margin: 2.5em 0; }
+  .post img {
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    border: 1px solid var(--color-border);
+  }
+  :global(html.dark) .post img { border-color: var(--color-border-on-dark); }
+  .post figcaption {
+    margin-top: 0.75em;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--color-muted-foreground);
+  }
+  :global(html.dark) .post figcaption { color: var(--color-muted-foreground-on-dark); }
+</style>

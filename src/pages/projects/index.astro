@@ -4,6 +4,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const projects = [
   {
+    title: 'cellar',
+    description:
+      'AI customer support agent for a wine shop that looks up orders, cancels and refunds within limits, and checks stock, running on local models on two home GPUs. It asks before anything it can\'t undo and checks every action against the database before replying. LangGraph, LlamaIndex, a QLoRA fine-tuned router (98.1% vs 80.7% prompted), MCP, FastAPI and Next.js. Passes 79 of 81 test conversations.',
+    year: '2026',
+    href: '/writing/building-cellar',
+  },
+  {
     title: 'Bukra',
     description:
       'Cross-border intercity transport platform for Africa — search and book bus tickets, flights, and parcel shipments from the web or WhatsApp. Live across South Sudan, Uganda, Kenya, Rwanda, Somalia, and Togo. Card, cash, and mobile money. Built the booking flow, design system, multi-channel checkout, and CI/CD pipeline.',
