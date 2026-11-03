@@ -23,6 +23,19 @@ const links = [
         ))
       }
       <button
+        id="menu-toggle"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border)] text-[var(--color-foreground)] hover:text-[var(--color-accent)] sm:hidden dark:border-[var(--color-border-on-dark)] dark:text-[var(--color-background)]"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg class="h-4 w-4" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+          <path class="menu-open-icon" d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          <path class="menu-close-icon hidden" d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </button>
+      <button
         id="theme-toggle"
         class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-border)] text-[var(--color-foreground)] hover:text-[var(--color-accent)] dark:border-[var(--color-border-on-dark)] dark:text-[var(--color-background)]"
         type="button"
@@ -38,9 +51,44 @@ const links = [
       </button>
     </div>
   </nav>
+  <div id="mobile-menu" class="hidden border-t border-[var(--color-border)] px-6 pb-4 sm:hidden dark:border-[var(--color-border-on-dark)]">
+    <ul class="mx-auto max-w-5xl">
+      {
+        links.map((link) => (
+          <li>
+            <a
+              class="flex min-h-11 items-center text-base font-medium text-[var(--color-foreground)] hover:text-[var(--color-accent)] aria-[current=page]:text-[var(--color-accent)] dark:text-[var(--color-background)] dark:aria-[current=page]:text-[var(--color-accent)]"
+              href={link.href}
+              aria-current={Astro.url.pathname.replace(/\/$/, '') === link.href ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </header>
 
 <script is:inline>
+  const menuToggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const setMenu = (open) => {
+    if (!menuToggle || !menu) return;
+    menu.classList.toggle('hidden', !open);
+    menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    menuToggle.querySelector('.menu-open-icon')?.classList.toggle('hidden', open);
+    menuToggle.querySelector('.menu-close-icon')?.classList.toggle('hidden', !open);
+  };
+  menuToggle?.addEventListener('click', () => setMenu(menu?.classList.contains('hidden') ?? false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menuToggle?.getAttribute('aria-expanded') === 'true') {
+      setMenu(false);
+      menuToggle.focus();
+    }
+  });
+
   const toggle = document.getElementById('theme-toggle');
   const syncPressed = () => {
     toggle?.setAttribute('aria-pressed', document.documentElement.classList.contains('dark') ? 'true' : 'false');
