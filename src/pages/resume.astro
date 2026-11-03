@@ -1,0 +1,191 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Source of truth: public/Riiny_Giir_Resume.pdf. Keep this page in sync with it.
+const PDF = '/Riiny_Giir_Resume.pdf';
+
+type Link = { label: string; href: string };
+type Entry = {
+  org: string;
+  role?: string;
+  when?: string;
+  links?: Link[];
+  context?: string;
+  bullets: string[];
+};
+
+const experience: Entry[] = [
+  {
+    org: 'Bukra',
+    role: 'CTO / Co-founder',
+    when: 'Jun 2026 – Present',
+    links: [{ label: 'bukra.co', href: 'https://bukra.co' }],
+    bullets: [
+      'Co-built a transport booking platform for buses, flights and parcels, live in six African countries, with a booking site, operator dashboard and portals for airlines and agents (Next.js, TypeScript, Express, PostgreSQL)',
+      'Integrated five payment providers (M-Pesa, MTN MoMo, PawaPay, PayGate, Stripe), handling refunds, payouts and provider outages',
+      'Built an AI booking assistant on the web, WhatsApp and Messenger, plus USSD booking for basic phones, using Claude with tool calls into live trip, seat and booking data',
+      "Made the AI provider switchable between Anthropic and AWS Bedrock with a configuration change, and added per-user spending caps so abuse can't run up costs",
+      'Shipped in four languages (English, French, Arabic, and Swahili), with CI that fails when a translation is missing',
+    ],
+  },
+  {
+    org: 'Crossbeam Inc.',
+    role: 'AI Associate, Trace',
+    when: 'Jan 2026 – Sep 2026',
+    links: [{ label: 'tracedata.ai', href: 'https://tracedata.ai' }],
+    context:
+      "Trace is Crossbeam's AI-native company intelligence dataset (1M+ companies, 30K+ technology vendors), served through MCP, a REST API and a web app.",
+    bullets: [
+      'Designed Claude API prompts and structured-output schemas that turn crawled web signals into evidence-backed vendor and technology records',
+      'Led data quality for LLM-based technology detection: built an automated evaluation system that checks each detection against its source evidence, so accuracy was measured on every change instead of spot-checked',
+      'Used it to find and fix systematic false positives, raising precision from 30% to 80% on the detection classes I was responsible for',
+      "Contributed to Trace's Python/FastAPI backend and web crawl pipeline on PostgreSQL",
+      'Shipped 20+ production features in 8 months, using Claude Code across build, test and debug',
+    ],
+  },
+  {
+    org: 'HomeSource Systems',
+    role: 'System Implementation Specialist',
+    when: 'Jun 2025 – Nov 2025',
+    bullets: [
+      'Rolled out ERP and point-of-sale systems on-site at 5+ client locations, handling integration, configuration and staff training to drive adoption',
+      "Documented system functionality, workflows and user procedures for HomeSource's largest enterprise client, working with the software team lead",
+      'Worked with product managers, QA and engineering teams to find system bottlenecks and improve the deployment process',
+    ],
+  },
+  {
+    org: 'Harvard University',
+    role: 'Research Assistant',
+    when: 'Jun 2023 – Aug 2023',
+    bullets: [
+      'Applied statistical methods and data visualization techniques to analyze complex biological data, contributing to research findings',
+    ],
+  },
+];
+
+const projects: Entry[] = [
+  {
+    org: 'Cellar',
+    role: 'AI customer support agent',
+    when: '2026',
+    links: [
+      { label: 'Write-up', href: '/writing/building-cellar' },
+      { label: 'GitHub', href: 'https://github.com/rama-kata/support-agent' },
+    ],
+    bullets: [
+      'A LangGraph support agent that asks before irreversible actions and checks its replies against the database before they reach the customer; passes 79 of 81 test conversations',
+      'Fine-tuned a 3B model with QLoRA to 98.1% intent accuracy, vs 80.7% for the same model prompted; runs on local GPUs, with a public live demo',
+    ],
+  },
+  {
+    org: 'FastBreak',
+    role: 'NBA stats agent · in progress',
+    when: '2026',
+    links: [{ label: 'GitHub', href: 'https://github.com/rama-kata/FastBreak' }],
+    bullets: [
+      'Built a text-to-SQL agent over a nightly-updated SQLite stats database; every answer shows its SQL and rows, and replies with numbers not in the results are blocked',
+      'Raised accuracy from 40% to 88% on a 50-question test set scored by correct rows, running Qwen3-14B locally on consumer GPUs',
+      'Added routing between fast and step-by-step reasoning modes, reaching 80% accuracy at ~60% of the model time per correct answer',
+    ],
+  },
+];
+
+const sections = [
+  { id: 'experience', title: 'Experience', entries: experience },
+  { id: 'projects', title: 'Projects', entries: projects },
+];
+
+const skills = [
+  { label: 'Languages', items: 'TypeScript, Python, SQL, JavaScript, Java, C++' },
+  { label: 'Frameworks', items: 'Next.js, React, Node.js/Express, FastAPI, LlamaIndex' },
+  { label: 'Data & infrastructure', items: 'PostgreSQL (Supabase), Redis, AWS, Docker, Vercel, Railway, GitHub Actions' },
+  {
+    label: 'AI',
+    items: 'Claude API, AWS Bedrock, MCP, tool calling, structured outputs, LLM evaluation, prompt engineering, QLoRA fine-tuning, LangGraph, Ollama',
+  },
+];
+
+const muted = 'text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]';
+// Related items sit close (org/date beside its bullets); unrelated entries get more space.
+const row = 'grid gap-2 sm:grid-cols-4 sm:gap-x-10';
+const rule = 'border-t border-[var(--color-border)] dark:border-[var(--color-border-on-dark)]';
+---
+
+<BaseLayout title="Resume" description="Resume of Riiny Giir, AI Engineer in San Francisco: Bukra, Crossbeam (Trace), and agent projects with measured evals.">
+  <header class="mx-auto max-w-4xl py-20 text-center sm:py-28" aria-labelledby="resume-title">
+    <h1 id="resume-title" class="text-6xl font-semibold leading-[0.95] tracking-tight sm:text-7xl">
+      Resume
+      <span class={`font-display block italic text-[0.92em] ${muted}`}>AI Engineer, San Francisco</span>
+    </h1>
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-4 text-sm font-medium">
+      <a
+        class="inline-flex min-h-11 items-center rounded-full bg-[var(--color-accent)] px-6 text-white transition-colors duration-150 hover:bg-[var(--color-accent-dark)] hover:text-white hover:no-underline"
+        href={PDF}
+        download
+      >
+        Download PDF
+      </a>
+      <a href="/contact">Get in touch ›</a>
+    </div>
+  </header>
+
+  <div class="mx-auto max-w-4xl pb-24">
+    {
+      sections.map((s) => (
+        <section class={`space-y-10 py-12 ${rule}`} aria-labelledby={s.id}>
+          <h2 id={s.id} class="font-display text-3xl italic">{s.title}</h2>
+          {s.entries.map((e) => (
+            <div class={row}>
+              <div class="sm:col-span-1">
+                <p class="font-semibold">{e.org}</p>
+                <p class={`mt-1 text-sm ${muted}`}>{e.when}</p>
+                {e.links?.map((l) => (
+                  <a class="mt-1 mr-3 inline-block text-sm" href={l.href} rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+                    {l.label}
+                  </a>
+                ))}
+              </div>
+              <div class="max-w-[70ch] sm:col-span-3">
+                <p class="font-medium">{e.role}</p>
+                {e.context && <p class={`mt-2 text-sm italic leading-relaxed ${muted}`}>{e.context}</p>}
+                <ul class={`mt-3 list-disc space-y-2 pl-5 leading-relaxed marker:text-[var(--color-border)] ${muted}`}>
+                  {e.bullets.map((b) => <li>{b}</li>)}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </section>
+      ))
+    }
+
+    <section class={`space-y-6 py-12 ${rule}`} aria-labelledby="skills">
+      <h2 id="skills" class="font-display text-3xl italic">Skills</h2>
+      <dl class="space-y-4">
+        {
+          skills.map((s) => (
+            <div class={row}>
+              <dt class="font-semibold sm:col-span-1">{s.label}</dt>
+              <dd class={`max-w-[70ch] leading-relaxed sm:col-span-3 ${muted}`}>{s.items}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class={`space-y-6 py-12 ${rule}`} aria-labelledby="education">
+      <h2 id="education" class="font-display text-3xl italic">Education & activities</h2>
+      <div class={row}>
+      <div class="sm:col-span-1">
+        <p class="font-semibold">Franklin &amp; Marshall College</p>
+        <p class={`mt-1 text-sm ${muted}`}>Aug 2021 – May 2025</p>
+      </div>
+      <div class={`max-w-[70ch] leading-relaxed sm:col-span-3 ${muted}`}>
+        <p class="font-medium text-[var(--color-foreground)] dark:text-[var(--color-background)]">B.A., Computer Science; Minor in Studio Art</p>
+        <p class="mt-3">
+          Men's basketball: 2025 Centennial Conference champions and NCAA Tournament team; NABC Honors Court (2×).
+        </p>
+      </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

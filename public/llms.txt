@@ -10,7 +10,8 @@ Riiny Giir is an AI engineer building Bukra full-time and looking for his next A
 - [Now](https://personal-website-eight-zeta-31.vercel.app/now): Live snapshot of current work and priorities
 - [Projects](https://personal-website-eight-zeta-31.vercel.app/projects): Technical projects and competitions
 - [Stack](https://personal-website-eight-zeta-31.vercel.app/stack): Tools and technologies used daily
-- [Contact](https://personal-website-eight-zeta-31.vercel.app/contact): GitHub, LinkedIn, and email
+- [Resume](https://personal-website-eight-zeta-31.vercel.app/resume): Full resume, with a PDF download at https://personal-website-eight-zeta-31.vercel.app/Riiny_Giir_Resume.pdf
+- [Contact](https://personal-website-eight-zeta-31.vercel.app/contact): GitHub, LinkedIn, X, Instagram, and email
 
 ## Current Work
 
@@ -48,6 +49,8 @@ What he has built and measured:
 Previously: AI Associate at Crossbeam, working on Trace, an AI-derived dataset of company technologies and partnerships.
 
 Areas of focus: AI agents and tool use, LLM fine-tuning (LoRA, QLoRA), evaluation infrastructure, and retrieval.
+
+Resume: https://personal-website-eight-zeta-31.vercel.app/resume
 
 **Contact and full profile: https://www.linkedin.com/in/riiny-giir-a1b29b213/**
 
