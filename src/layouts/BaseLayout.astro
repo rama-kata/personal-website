@@ -32,6 +32,9 @@ const lastUpdated = new Date().toLocaleDateString('en', {
       href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
     <meta name="author" content="Riiny Giir" />
     <meta name="keywords" content="ML Engineer, Applied ML, LoRA fine-tuning, distributed training, PyTorch, vLLM, CUDA, LLM eval, reasoning models, AI infrastructure, San Francisco" />
     <meta name="profile:skills" content="LoRA, PEFT, QLoRA, PyTorch DDP, NCCL, vLLM, HuggingFace Transformers, CUDA, Mamba, MoE, Python, TypeScript" />
@@ -40,16 +43,16 @@ const lastUpdated = new Date().toLocaleDateString('en', {
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="profile" />
-    <meta property="og:image" content="https://personal-website-eight-zeta-31.vercel.app/profile.jpg" />
+    <meta property="og:image" content={new URL('/profile.jpg', Astro.site).href} />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:image" content="https://personal-website-eight-zeta-31.vercel.app/profile.jpg" />
+    <meta name="twitter:image" content={new URL('/profile.jpg', Astro.site).href} />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <script type="application/ld+json" is:inline>{JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Riiny Giir",
-      "url": "https://www.linkedin.com/in/riiny-giir-a1b29b213/",
+      "url": "https://www.riinygiir.com",
       "jobTitle": "AI Engineer",
       "description": "Applied ML engineer and AI builder based in San Francisco. Specializes in LLM fine-tuning, distributed training, and eval infrastructure. Actively seeking ML Engineer roles.",
       "address": {
