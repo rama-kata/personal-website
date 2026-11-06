@@ -1,0 +1,224 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const links = [
+  { label: 'Try FastBreak', href: 'https://fastbreak-eight.vercel.app' },
+  { label: 'Code, test set and results on GitHub', href: 'https://github.com/rama-kata/FastBreak' },
+];
+---
+
+<BaseLayout
+  title="Building FastBreak"
+  description="How I built an NBA stats assistant that shows the query and rows behind every answer, and what measuring it honestly taught me."
+>
+  <article class="mx-auto max-w-2xl py-20 sm:py-28" aria-labelledby="post-title">
+    <header class="text-center">
+      <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+        November 2026 · Project write-up
+      </p>
+      <h1 id="post-title" class="mt-6 text-5xl font-semibold leading-[0.98] tracking-tight sm:text-6xl">
+        Building FastBreak
+        <span class="font-display block italic text-[0.9em] text-[var(--color-muted-foreground)] dark:text-[var(--color-muted-foreground-on-dark)]">
+          an NBA stats assistant that shows its work
+        </span>
+      </h1>
+      <div class="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-medium">
+        {links.map((l) => <a href={l.href} rel="noopener noreferrer">{l.label} ›</a>)}
+      </div>
+    </header>
+
+    <div class="post mt-16">
+      <p>
+        FastBreak answers plain-English questions about the NBA, like "What was the Warriors' regular season
+        record in 2015-16?" or "Who has the most 20-point games off the bench?", from a database of every game
+        since 2015-16 that updates every night. Under every answer it shows the SQL query it ran and the rows
+        that query returned, so you never have to take its word for anything.
+      </p>
+      <p>
+        I wanted to build something where I couldn't hide behind a reply that sounds right. A stats question
+        has one correct answer, so every claim the system makes can be checked, and that meant I had to
+        measure it properly instead of trying it a few times and deciding it worked.
+      </p>
+
+      <figure>
+        <img src="/writing/fastbreak/answer.png" alt="FastBreak answering the Warriors' 2015-16 record, with the number 73 circled in the headline and in the result table, and the SQL query beside it" loading="lazy" />
+        <figcaption>Every answer is printed like a box score. Point at a number in the answer and it gets circled in the rows it came from.</figcaption>
+      </figure>
+
+      <h2>How it works</h2>
+      <p>
+        The data comes from NBA.com through the nba_api library. Loading every season's game log took about
+        100 seconds: 14,128 games and 300,879 player rows. Who started each game is only in the box scores,
+        though, and that is about 14,000 separate requests, so that part ran overnight and had to survive
+        NBA.com blocking me partway through. Each game is recorded as it loads, so a crash or a block just
+        means the next run picks up where the last one stopped. A nightly job at 9am adds the new games and
+        reloads the current season, because the NBA corrects stats after the fact.
+      </p>
+      <p>
+        The assistant itself is deliberately simple. A language model, qwen3:14b running on Ollama on my home
+        PC with two graphics cards, writes a SQL query for the question. The query runs on a read-only
+        connection with a 10 second limit. Then the model writes the answer from the rows, and a check holds
+        the answer back if any number in it isn't in those rows. The web app is Next.js on Vercel, talking to
+        an API on my PC through a Tailscale tunnel.
+      </p>
+
+      <h2>What I found</h2>
+
+      <h3>Score the rows, not the reply</h3>
+      <p>
+        Before building the assistant, I wrote 50 test questions with the SQL that answers them, and saved the
+        rows each one returns. An answer only counts when the assistant's query returns the same rows. Reading
+        replies and judging them would have been faster, and it would have hidden most of what I found below.
+        I drafted the questions with Claude Code. I checked 12 of the answers against outside sources myself,
+        and approved the other 38 on Claude Code's source checks, with each link written down next to the
+        question.
+      </p>
+
+      <h3>Half the wrong answers had the right numbers</h3>
+      <p>
+        The first version got 20 of 50 right. When I went through the 25 wrong answers, 13 of them had the
+        right values with the wrong labels: a team ID instead of the team, seconds instead of minutes, a game
+        ID instead of the date. I added rules for how a result should look, which a real app needs anyway to
+        display an answer, and the score went to 31 of 50. Comparing question by question, 12 got fixed and 1
+        broke, which is very unlikely to be luck.
+      </p>
+
+      <h3>Some wrong answers were my fault</h3>
+      <p>
+        Two of the answers I'd marked wrong were fair readings of my own questions. "The most points scored off
+        the bench in a single game" can mean one player or a whole team's bench, and the model picked the team.
+        I reworded both questions instead of pretending the model was wrong.
+      </p>
+
+      <h3>A setting was quietly deleting my prompt</h3>
+      <p>
+        Thinking mode, where the model reasons before it answers, roughly doubled the score on hard questions,
+        from 5 of 15 to 11 of 15. But its replies ran past 9,000 tokens, and Ollama was using its default
+        4,096-token context. Past that limit it silently drops the oldest text, which was the database schema
+        at the top of my prompt. Nothing errored. I fixed the context size, capped how long a reply can be, and
+        re-ran everything. The score came out the same, 44 of 50, but until that re-run I couldn't have said so.
+      </p>
+
+      <h3>Accuracy costs time, and you have to choose</h3>
+      <p>
+        Thinking on gets 44 of 50 right but takes about 55 seconds a question. Thinking off gets 36 of 50 in
+        about 6 seconds. I built a router where a quick call decides whether a question is hard, which got 40
+        of 50 at about 11 seconds. I also tried a small open model to make the simple questions faster, and it
+        got 1 of 50.
+      </p>
+      <p>
+        Then the site went live, and the first hard question I asked on it took 83 seconds. The page sat on its
+        first step the whole time, and from the outside it looked broken. So the live site now runs with
+        thinking off. It is right less often, but nobody waits a minute and a half wondering if it crashed. That
+        was a product decision, not a technical one, and I wrote down why in the repo.
+      </p>
+
+      <figure>
+        <img src="/writing/fastbreak/working.png" alt="FastBreak working on a question, with a timestamped list of steps and a Stop button" loading="lazy" />
+        <figcaption>While it works, the steps show up with timestamps, so a slow answer looks slow instead of stuck.</figcaption>
+      </figure>
+
+      <h3>The check can't catch the wrong question</h3>
+      <p>
+        One of the first questions on the live site was "Who scored the most points in a game last season?",
+        and it answered "Shai
+        Gilgeous-Alexander, with 2531 points." That is his whole season. The query added up every game instead
+        of taking the best one, and my number check passed, because 2531 really was in the rows. The check
+        proves every number came from the data. It can't tell you the query answered a different question. That
+        is exactly why the query and the rows are always on screen, and the miss is now in my test set. When I
+        asked it again, it got it right (Bam Adebayo's 83), which is its own lesson: the model doesn't make the
+        same mistake every time.
+      </p>
+
+      <h3>50 questions is a small test</h3>
+      <p>
+        36 of 50 sounds precise, but with 50 questions the true rate is anywhere from about 58% to 82%. One
+        question moves the score by 2 points, and a re-run of the same setup flipped 3 questions each way. So I
+        compare runs question by question instead of by the headline number, and the site says "Right on 36 of
+        50 test questions" rather than a percentage that sounds more certain than it is.
+      </p>
+
+      <h3>The data fails in ways you only see live</h3>
+      <p>
+        On the first night of the season, the nightly job recorded a game as failed because it was still in the
+        first quarter. A week later the job crashed, because my PC had been off at 9am, so it ran in the evening
+        while games were being played and NBA.com sent back a box score with no team stats yet. Each of these is
+        written up in the repo with what happened, why, the fix, and the test that now catches it.
+      </p>
+
+      <h2>What I learnt</h2>
+      <p>
+        The main lesson was the same one cellar taught me, but sharper: decide how you'll measure something
+        before you build it, and make the measure strict. Scoring by rows instead of by how a reply reads is
+        what found the label problems, my own bad questions, and the context bug. The second lesson was to be
+        honest about what a check can and can't do. "Every number is checked" is true, and it still let a
+        confidently wrong answer through. The third was that accuracy, speed and how something feels to use pull
+        against each other, and choosing between them is part of the job, not something the numbers decide for
+        you.
+      </p>
+      <p>
+        I built this with Claude Code again, including the redesign of the web app, where every answer is laid
+        out like a newspaper box score. The useful part wasn't the speed. It was asking it to show me the
+        evidence for a result, and then checking that evidence myself before I believed it.
+      </p>
+
+      <figure>
+        <img src="/writing/fastbreak/home.png" alt="The FastBreak home page with last night's scores across the top and the headline 'Ask anything about the NBA. See the proof.'" loading="lazy" />
+        <figcaption>The home page, with last night's games across the top and the tested accuracy under the question box.</figcaption>
+      </figure>
+
+      <h2>Where it stands</h2>
+      <p>
+        FastBreak is live and answers from my PC whenever it's on. It gets 36 of 50 test questions right with
+        thinking off, in about 6 seconds. Next I want to grow the test set to 150 or 200 questions, mostly from
+        what real people ask, so the score means more, and run each setup more than once. I also want to see
+        whether fine-tuning a small model on this database can match the big one on simple questions, the way it
+        did for cellar.
+      </p>
+      <p>
+        You can <a href="https://fastbreak-eight.vercel.app" rel="noopener noreferrer">try it</a> while my machine
+        is on, and the code, the test set and every run's results are
+        <a href="https://github.com/rama-kata/FastBreak" rel="noopener noreferrer">on GitHub</a>.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--color-foreground);
+  }
+  :global(html.dark) .post { color: var(--color-background); }
+  .post p { margin: 0 0 1.4em; }
+  .post h2 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 2.1rem;
+    line-height: 1.15;
+    margin: 2.4em 0 0.7em;
+  }
+  .post h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 2em 0 0.5em;
+  }
+  .post figure { margin: 2.5em 0; }
+  .post img {
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    border: 1px solid var(--color-border);
+  }
+  :global(html.dark) .post img { border-color: var(--color-border-on-dark); }
+  .post figcaption {
+    margin-top: 0.75em;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--color-muted-foreground);
+  }
+  :global(html.dark) .post figcaption { color: var(--color-muted-foreground-on-dark); }
+</style>
