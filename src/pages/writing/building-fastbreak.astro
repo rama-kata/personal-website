@@ -108,9 +108,9 @@ const links = [
       </p>
       <p>
         Then the site went live, and the first hard question I asked on it took 83 seconds. The page sat on its
-        first step the whole time, and from the outside it looked broken. So the live site now runs with
-        thinking off. It is right less often, but nobody waits a minute and a half wondering if it crashed. That
-        was a product decision, not a technical one, and I wrote down why in the repo.
+        first step the whole time, and from the outside it looked broken. So the live site switched to thinking
+        off. It is right less often, but nobody waits a minute and a half wondering if it crashed. That was a
+        product decision, not a technical one, and I wrote down why in the repo.
       </p>
 
       <figure>
@@ -134,8 +134,9 @@ const links = [
       <p>
         36 of 50 sounds precise, but with 50 questions the true rate is anywhere from about 58% to 82%. One
         question moves the score by 2 points, and a re-run of the same setup flipped 3 questions each way. So I
-        compare runs question by question instead of by the headline number, and the site says "Right on 36 of
-        50 test questions" rather than a percentage that sounds more certain than it is.
+        compare runs question by question instead of by the headline number, and the site gives its score as a
+        count ("Right on 37 of 50 test questions" today, which means somewhere between 60% and 84%) rather than
+        a percentage that sounds more certain than it is.
       </p>
 
       <h3>The data fails in ways you only see live</h3>
@@ -164,16 +165,56 @@ const links = [
 
       <figure>
         <img src="/writing/fastbreak/home.png" alt="The FastBreak home page with last night's scores across the top and the headline 'Ask anything about the NBA. See the proof.'" loading="lazy" />
-        <figcaption>The home page, with last night's games across the top and the tested accuracy under the question box.</figcaption>
+        <figcaption>The home page at launch, with last night's games across the top and the tested accuracy under the question box.</figcaption>
+      </figure>
+
+      <h2>Adding a semantic layer</h2>
+      <p>
+        After launch, I added a semantic layer, built with dbt. It is a set of tested tables where the
+        definitions an answer depends on are worked out once: minutes, home and away, wins, off the bench,
+        double- and triple-doubles, per-game averages, and shooting percentages as total makes over total
+        attempts. The model now queries those tables, and its prompt describes them with dbt's own descriptions,
+        so each definition lives in one place.
+      </p>
+      <p>
+        The pitch for semantic layers is that they make models better at SQL. On the same 50 questions with
+        thinking off, the raw tables scored 36. The first version of the layer also scored 36, and after two
+        fixes to it, 38 and then 37. That is flat. FastBreak is
+        four small tables, though, and my prompt already defined most terms. The big gains people report come
+        from huge, messy schemas.
+      </p>
+
+      <h3>It moved the mistakes</h3>
+      <p>
+        The definition errors went away. It used to say the Celtics averaged 8 points a game, because it
+        averaged over players instead of games. Now it says 120.6. But a new kind of mistake showed up. One
+        table has a row for each team in a game, so every game appears twice, and the model counted rows
+        instead of games: 118 overtime games in a season that had 59. Adding a table with one row per game
+        fixed counting games, but tables like these still trip it up. Even after that fix, it told me the
+        2015-16 Warriors went 146-18. A semantic layer tells a model what a number means. It doesn't tell it
+        what a row is.
+      </p>
+
+      <h3>What it did improve</h3>
+      <p>
+        Each right answer takes about a third less of the model's time, and queries that fail to run went from
+        six in a run to one, because the model writes shorter queries when a definition is already a column.
+        The live site answers from it now, and under the box score it prints a key: the tables the query read,
+        what one row means in each, and the definitions it used.
+      </p>
+
+      <figure>
+        <img src="/writing/fastbreak/key.png" width="1440" height="713" alt="FastBreak answering how many triple-doubles Russell Westbrook had in 2016-17 (42), with a key under the result table naming the Player games table and the triple-double definition" loading="lazy" />
+        <figcaption>Under the box score, a key: the tables the query read and the definitions it used.</figcaption>
       </figure>
 
       <h2>Where it stands</h2>
       <p>
-        FastBreak is live and answers from my PC whenever it's on. It gets 36 of 50 test questions right with
-        thinking off, in about 6 seconds. Next I want to grow the test set to 150 or 200 questions, mostly from
-        what real people ask, so the score means more, and run each setup more than once. I also want to see
-        whether fine-tuning a small model on this database can match the big one on simple questions, the way it
-        did for cellar.
+        FastBreak is live and answers from my PC whenever it's on. It gets 37 of 50 test questions right with
+        thinking off, answering from the semantic layer in about 4 seconds. Next I want to grow the test set to
+        150 or 200 questions, mostly from what real people ask, so the score means more, and run each setup more
+        than once. I also want to stop the double counting, and see whether fine-tuning a small model on this
+        database can match the big one on simple questions, the way it did for cellar.
       </p>
       <p>
         You can <a href="https://fastbreak-eight.vercel.app" rel="noopener noreferrer">try it</a> while my machine
